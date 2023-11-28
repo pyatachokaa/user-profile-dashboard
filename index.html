@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>User Profile Dashboard</title>
+  <style>
+    /* ... CSS styles ... */
+  </style>
+  <script src="https://unpkg.com/vue@3.2.19/dist/vue.global.js"></script>
+  <style>
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+      border: 1px solid #ccc;
+      background-color: #f0f0f0;
+      font-family: Arial, sans-serif;
+    }
+
+    .profile-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .profile-picture {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-right: 20px;
+    }
+
+    .profile-info {
+      flex: 1;
+    }
+
+    .profile-name {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .profile-email {
+      font-size: 16px;
+      color: #666;
+    }
+
+    .profile-details {
+      margin-bottom: 20px;
+    }
+
+    .profile-details label {
+      display: block;
+      font-weight: bold;
+    }
+
+    .profile-details .value {
+      margin-top: 5px;
+    }
+
+    .greeting {
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+
+    .age {
+      margin-top: 10px;
+      font-style: italic;
+    }
+
+    .edit-form {
+      margin-top: 20px;
+    }
+
+    .form-field {
+      margin-bottom: 10px;
+    }
+
+    .form-field label {
+      display: block;
+      font-weight: bold;
+    }
+
+    .form-field input {
+      width: 100%;
+      padding: 5px;
+      font-size: 14px;
+    }
+
+    .form-field textarea {
+      width: 100%;
+      padding: 5px;
+      font-size: 14px;
+      resize: vertical;
+    }
+
+    .form-field button {
+      padding: 5px 10px;
+      font-size: 14px;
+    }
+
+    .success-message {
+      color: green;
+    }
+
+    .error-message {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div class="container">
+      <div class="profile-header">
+        <img class="profile-picture" :src="user.profilePicture" alt="Profile Picture">
+        <div class="profile-info">
+          <div class="profile-name">{{ user.name }}</div>
+          <div class="profile-email">{{ user.email }}</div>
+          <input type="file" @change="handlePictureChange">
+        </div>
+      </div>
+      <div class="profile-details">
+        <label>About:</label>
+        <div class="value">{{ user.about }}</div>
+      </div>
+      <div class="profile-details">
+        <label>Birthday:</label>
+        <div class="value">{{ user.birthdate }}</div>
+      </div>
+      <div class="profile-details">
+        <label>Location:</label>
+        <div class="value">{{ user.location }}</div>
+      </div>
+      <form class="edit-form" @submit.prevent="updateProfile">
+        <div class="form-field">
+          <label>Name:</label>
+          <input type="text" v-model="editUser.name" required>
+        </div>
+        <div class="form-field">
+          <label>Email:</label>
+          <input type="email" v-model="editUser.email" required>
+        </div>
+        <div class="form-field">
+          <label>About:</label>
+          <textarea v-model="editUser.about"></textarea>
+        </div>
+        <div class="form-field">
+          <label>Birthday:</label>
+          <input type="date" v-model="editUser.birthdate" required>
+        </div>
+        <div class="form-field">
+          <label>Location:</label>
+          <input type="text" v-model="editUser.location">
+        </div>
+        <div class="form-field">
+          <button type="submit">Save</button>
+        </div>
+        <div class="success-message" v-if="successMessage">{{ successMessage }}</div>
+        <div class="error-message" v-if="errorMessage">{{ errorMessage }}</div>
+      </form>
+    </div>
+  </div>
+  <script>
+    const app = Vue.createApp({
+      data() {
+        return {
+          user: {
+            name: "John Doe",
+            email: "johndoe@example.com",
+            profilePicture: "profile.jpg",
+            about: "I'm a web developer.",
+            birthdate: "1990-01-01",
+            location: "New York",
+          },
+          editUser: {
+            name: "",
+            email: "",
+            about: "",
+            birthdate: "",
+            location: "",
+          },
+          successMessage: "",
+          errorMessage: "",
+        };
+      },
+      methods: {
+        handlePictureChange(event) {
+          const file = event.target.files[0];
+          const reader = new FileReader();
+
+          reader.onload = () => {
+            this.user.profilePicture = reader.result;
+          };
+
+          reader.readAsDataURL(file);
+        },
+        updateProfile() {
+          // Simulating an asynchronous API call for updating the profile
+          setTimeout(() => {
+            // Validate the updated user profile
+            if (this.validateProfile(this.editUser)) {
+              // Update the user profile
+              this.user = { ...this.editUser };
+              this.successMessage = "Profile updated successfully.";
+              this.errorMessage = "";
+            } else {
+              this.successMessage = "";
+              this.errorMessage = "Invalid profile data. Please check your inputs.";
+            }
+          }, 1000); // Simulating a delay for the API call
+        },
+        validateProfile(user) {
+          // Perform validation logic here
+          // For simplicity, let's assume any non-empty values are valid
+          return Object.values(user).every((value) => value !== "");
+        },
+      },
+    });
+
+    app.mount("#app");
+  </script>
+</body>
+</html>
